@@ -3,6 +3,7 @@
 -- Pos 1 (Low): Cinematic (smooth, slow)
 -- Pos 2 (Mid): Agile (faster, more responsive)
 -- Pos 3 (High): Sports (aggressive, high performance)
+-- Includes altitude control parameters for consistent behavior
 
 local last_pos = 0
 local MSG_SEVERITY_INFO = 6  -- MAV_SEVERITY_INFO for gcs:send_text
@@ -38,13 +39,18 @@ local function update()
         local mode_name = ""
         local success = true
         if pos == 1 then
-            -- Cinematic settings (smooth loiter)
+            -- Cinematic settings (smooth loiter and altitude control)
             success = success and set_param("LOIT_SPEED", 500)      -- cm/s
             success = success and set_param("LOIT_ACC_MAX", 180)    -- cm/s^2
             success = success and set_param("LOIT_ANG_MAX", 15)     -- degrees
             success = success and set_param("LOIT_BRK_ACCEL", 180)  -- cm/s^2
             success = success and set_param("LOIT_BRK_DELAY", 1.3)  -- seconds
             success = success and set_param("LOIT_BRK_JERK", 400)   -- cm/s^3
+            success = success and set_param("PILOT_ACCEL_Z", 250)   -- cm/s^2
+            success = success and set_param("PILOT_SPEED_DN", 350)  -- cm/s
+            success = success and set_param("PILOT_SPEED_UP", 300)  -- cm/s
+            success = success and set_param("PILOT_Y_RATE", 202.5)  -- deg/s
+            success = success and set_param("PILOT_Y_EXPO", 0)      -- linear yaw
             mode_name = "Cinematic"
         elseif pos == 2 then
             -- Agile settings (balanced speed and responsiveness)
@@ -54,6 +60,11 @@ local function update()
             success = success and set_param("LOIT_BRK_ACCEL", 300)  -- cm/s^2
             success = success and set_param("LOIT_BRK_DELAY", 1.0)  -- seconds
             success = success and set_param("LOIT_BRK_JERK", 600)   -- cm/s^3
+            success = success and set_param("PILOT_ACCEL_Z", 400)   -- cm/s^2
+            success = success and set_param("PILOT_SPEED_DN", 500)  -- cm/s
+            success = success and set_param("PILOT_SPEED_UP", 450)  -- cm/s
+            success = success and set_param("PILOT_Y_RATE", 300)    -- deg/s
+            success = success and set_param("PILOT_Y_EXPO", 0.2)    -- slight expo
             mode_name = "Agile"
         else
             -- Sports settings (high speed, aggressive maneuvers)
@@ -63,6 +74,11 @@ local function update()
             success = success and set_param("LOIT_BRK_ACCEL", 500)  -- cm/s^2
             success = success and set_param("LOIT_BRK_DELAY", 0.5)  -- seconds
             success = success and set_param("LOIT_BRK_JERK", 1000)  -- cm/s^3
+            success = success and set_param("PILOT_ACCEL_Z", 600)   -- cm/s^2
+            success = success and set_param("PILOT_SPEED_DN", 750)  -- cm/s
+            success = success and set_param("PILOT_SPEED_UP", 600)  -- cm/s
+            success = success and set_param("PILOT_Y_RATE", 450)    -- deg/s
+            success = success and set_param("PILOT_Y_EXPO", 0.4)    -- pronounced expo
             mode_name = "Sports"
         end
 
